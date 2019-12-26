@@ -1,15 +1,16 @@
-#include "fmt/core.h"
+#include "3rd_party/fmt/include/fmt/core.h"
 #include "tokenizer/tokenizer.h"
 #include "analyser/analyser.h"
+#include "instruction/instruction.h"
 
 namespace fmt {
 	template<>
 	struct formatter<miniplc0::ErrorCode> {
 		template <typename ParseContext>
-		constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+		constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
 
 		template <typename FormatContext>
-		auto format(const miniplc0::ErrorCode &p, FormatContext &ctx) {
+		auto format(const miniplc0::ErrorCode& p, FormatContext& ctx) {
 			std::string name;
 			switch (p) {
 			case miniplc0::ErrNoError:
@@ -77,10 +78,10 @@ namespace fmt {
 	template<>
 	struct formatter<miniplc0::CompilationError> {
 		template <typename ParseContext>
-		constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+		constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
 
 		template <typename FormatContext>
-		auto format(const miniplc0::CompilationError &p, FormatContext &ctx) {
+		auto format(const miniplc0::CompilationError& p, FormatContext& ctx) {
 			return format_to(ctx.out(), "Line: {} Column: {} Error: {}", p.GetPos().first, p.GetPos().second, p.GetCode());
 		}
 	};
@@ -90,10 +91,10 @@ namespace fmt {
 	template<>
 	struct formatter<miniplc0::Token> {
 		template <typename ParseContext>
-		constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+		constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
 
 		template <typename FormatContext>
-		auto format(const miniplc0::Token &p, FormatContext &ctx) {
+		auto format(const miniplc0::Token& p, FormatContext& ctx) {
 			return format_to(ctx.out(),
 				"Line: {} Column: {} Type: {} Value: {}",
 				p.GetStartPos().first, p.GetStartPos().second, p.GetType(), p.GetValueString());
@@ -103,127 +104,27 @@ namespace fmt {
 	template<>
 	struct formatter<miniplc0::TokenType> {
 		template <typename ParseContext>
-		constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+		constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
 
 		template <typename FormatContext>
-		auto format(const miniplc0::TokenType &p, FormatContext &ctx) {
-			std::string name;
-			switch (p) {
-			case miniplc0::NULL_TOKEN:
-				name = "NullToken";
-				break;
-			case miniplc0::UNSIGNED_INTEGER:
-				name = "UnsignedInteger";
-				break;
-			case miniplc0::IDENTIFIER:
-				name = "Identifier";
-				break;
-			case miniplc0::BEGIN:
-				name = "Begin";
-				break;
-			case miniplc0::END:
-				name = "End";
-				break;
-			case miniplc0::VAR:
-				name = "Var";
-				break;
-			case miniplc0::CONST:
-				name = "Const";
-				break;
-			case miniplc0::PRINT:
-				name = "Print";
-				break;
-			case miniplc0::PLUS_SIGN:
-				name = "PlusSign";
-				break;
-			case miniplc0::MINUS_SIGN:
-				name = "MinusSign";
-				break;
-			case miniplc0::MULTIPLICATION_SIGN:
-				name = "MultiplicationSign";
-				break;
-			case miniplc0::DIVISION_SIGN:
-				name = "DivisionSign";
-				break;
-			case miniplc0::EQUAL_SIGN:
-				name = "EqualSign";
-				break;
-			case miniplc0::SEMICOLON:
-				name = "Semicolon";
-				break;
-			case miniplc0::LEFT_BRACKET:
-				name = "LeftBracket";
-				break;
-			case miniplc0::RIGHT_BRACKET:
-				name = "RightBracket";
-				break;
-			}
-			return format_to(ctx.out(), name);
-		}
-	};
-}
-
-namespace fmt {
-	template<>
-	struct formatter<miniplc0::Operation> {
-		template <typename ParseContext>
-		constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
-
-		template <typename FormatContext>
-		auto format(const miniplc0::Operation &p, FormatContext &ctx) {
-			std::string name;
-			switch (p) {
-			case miniplc0::ILL:
-				name = "ILL";
-				break;
-			case miniplc0::ADD:
-				name = "ADD";
-				break;
-			case miniplc0::SUB:
-				name = "SUB";
-				break;
-			case miniplc0::MUL:
-				name = "MUL";
-				break;
-			case miniplc0::DIV:
-				name = "DIV";
-				break;
-			case miniplc0::WRT:
-				name = "WRT";
-				break;
-			case miniplc0::LIT:
-				name = "LIT";
-				break;
-			case miniplc0::LOD:
-				name = "LOD";
-				break;
-			case miniplc0::STO:
-				name = "STO";
-				break;
-			}
+		auto format(const miniplc0::TokenType& p, FormatContext& ctx) {
+			std::string name = "null";
 			return format_to(ctx.out(), name);
 		}
 	};
 	template<>
 	struct formatter<miniplc0::Instruction> {
 		template <typename ParseContext>
-		constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+		constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
 
 		template <typename FormatContext>
-		auto format(const miniplc0::Instruction &p, FormatContext &ctx) {
+		auto format(const miniplc0::Instruction& p, FormatContext& ctx) {
 			std::string name;
 			switch (p.GetOperation())
 			{
-			case miniplc0::ILL:
-			case miniplc0::ADD:
-			case miniplc0::SUB:
-			case miniplc0::MUL:
-			case miniplc0::DIV:
-			case miniplc0::WRT:
+			case miniplc0::snew:
 				return format_to(ctx.out(), "{}", p.GetOperation());
-			case miniplc0::LIT:
-			case miniplc0::LOD:
-			case miniplc0::STO:
+			case miniplc0::iadd:
 				return format_to(ctx.out(), "{} {}", p.GetOperation(), p.GetX());
 			}
 			return format_to(ctx.out(), "ILL");

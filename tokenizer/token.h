@@ -12,20 +12,53 @@ namespace miniplc0 {
 		NULL_TOKEN,
 		UNSIGNED_INTEGER,
 		IDENTIFIER,
-		BEGIN,
-		END,
-		VAR,
 		CONST,
 		PRINT,
+		SCAN,
+		VOID,
+		INT,
+		CHAR,
+		DOUBLE,
+		STRUCT,
+		IF,
+		ELSE,
+		SWITCH,
+		CASE,
+		DEFAULT,
+		WHILE,
+		FOR,
+		DO,
+		RETURN,
+		BREAK,
+		CONTINUE,
 		PLUS_SIGN,
 		MINUS_SIGN,
 		MULTIPLICATION_SIGN,
 		DIVISION_SIGN,
+		LESS_SIGN,
+		LESS_EQAUL_SIGN,
+		MORE_SIGN,
+		MORE_EQUAL_SIGN,
+		NOT_EQUAL_SIGN,
+		TOTAL_EQUAL_SIGN,
 		EQUAL_SIGN,
 		SEMICOLON,
 		LEFT_BRACKET,
-		RIGHT_BRACKET
+		RIGHT_BRACKET,
+		SINGLE_COMMENT,
+		LEFT_MULTI_COMMENT,
+		RIGHT_MULTI_COMMENT,
+		COMMA,
+		LEFT_MID_BRACKET,
+		RIGHT_MID_BRACKET,
+		MAO_SIGN,
+		FUNC,
+		ESCAPE_SEQ,
+		STRING,
+		S_CHAR,
+		C_CHAR
 	};
+
 
 	class Token final {
 	private:
@@ -72,6 +105,7 @@ namespace miniplc0 {
 			}
 			return "Invalid";
 		}
+
 	private:
 		TokenType _type;
 		std::any _value;

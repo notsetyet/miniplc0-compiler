@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <fstream>
 
 namespace miniplc0 {
 
@@ -22,15 +23,41 @@ namespace miniplc0 {
 		enum DFAState {
 			INITIAL_STATE,
 			UNSIGNED_INTEGER_STATE,
+			ZERO_STATE,
+			DECIMAL_LITERAL_STATE,
+			HEXADECIMAL_LITERAL_STATE,
 			PLUS_SIGN_STATE,
 			MINUS_SIGN_STATE,
 			DIVISION_SIGN_STATE,
 			MULTIPLICATION_SIGN_STATE,
 			IDENTIFIER_STATE,
+			EQUAL_STATE,
 			EQUAL_SIGN_STATE,
+			TOTAL_EQUAL_STATE,
 			SEMICOLON_STATE,
 			LEFTBRACKET_STATE,
-			RIGHTBRACKET_STATE
+			RIGHTBRACKET_STATE,
+			LESS_STATE,
+			LESS_SIGN_STATE,
+			LESS_EQUAL_SIGN_STATE,
+			MORE_STATE,
+			MORE_SIGN_STATE,
+			MORE_EQUAL_SIGN_STATE,
+			NOT_EQUAL_SIGN_STATE,
+			SINGLE_COMMENT_STATE,
+			LEFT_MULTI_COMMENT_STATE,
+			RIGHT_MULTI_COMMENT_STATE,
+			MAO_STATE,
+			FLOAT_STATE,
+			DOUBLE_STATE,
+			EXPONENT_STATE,
+			DOT_STATE,
+			LEFT_MID_BRACKET_STATE,
+			RIGHT_MID_BRACKET_STATE,
+			ESCAPE_SEQ_STATE,
+			CHAR_LITERAL_STATE,
+			STRING_LITERAL_STATE,
+			COMMA_STATE
 		};
 	public:
 		Tokenizer(std::istream& ifs)
@@ -78,7 +105,8 @@ namespace miniplc0 {
 		std::pair<uint64_t, uint64_t> previousPos();
 		std::optional<char> nextChar();
 		bool isEOF();
-		void unreadLast();
+		void unreadLast();		
+
 	private:
 		std::istream& _rdr;
 		// 如果没有初始化，那么就 readAll

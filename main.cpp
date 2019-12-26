@@ -1,5 +1,5 @@
 #include "argparse.hpp"
-#include "fmt/core.h"
+//#include "3rd_party/fmt/include/fmt/core.h"
 
 #include "tokenizer/tokenizer.h"
 #include "analyser/analyser.h"
@@ -18,14 +18,14 @@ std::vector<miniplc0::Token> _tokenize(std::istream& input) {
 	return p.first;
 }
 
-void Tokenize(std::istream& input, std::ostream& output) {
-	auto v = _tokenize(input);
-	for (auto& it : v)
-		output << fmt::format("{}\n", it);
-	return;
-}
+//void Tokenize(std::istream& input, std::ostream& output) {
+//	auto v = _tokenize(input);
+//	for (auto& it : v)
+//		output << it << "\n";
+//	return;
+//}
 
-void Analyse(std::istream& input, std::ostream& output){
+void Analyse(std::istream& input, std::ostream& output) {
 	auto tks = _tokenize(input);
 	miniplc0::Analyser analyser(tks);
 	auto p = analyser.Analyse();
@@ -35,19 +35,26 @@ void Analyse(std::istream& input, std::ostream& output){
 	}
 	auto v = p.first;
 	for (auto& it : v)
-		output << fmt::format("{}\n", it);
+		output << it << "\n";
+	return;
+}
+
+void to_binary(std::istream& input, std::ostream& output) {
+	auto tks = _tokenize(input);
+	miniplc0::Analyser analyser(tks);
+	analyser.output_binary(analyser, output);
 	return;
 }
 
 int main(int argc, char** argv) {
-	argparse::ArgumentParser program("miniplc0");
+	argparse::ArgumentParser program("cc0");
 	program.add_argument("input")
 		.help("speicify the file to be compiled.");
 	program.add_argument("-t")
 		.default_value(false)
 		.implicit_value(true)
 		.help("perform tokenization for the input file.");
-	program.add_argument("-l")
+	program.add_argument("-s")
 		.default_value(false)
 		.implicit_value(true)
 		.help("perform syntactic analysis for the input file.");
@@ -59,9 +66,9 @@ int main(int argc, char** argv) {
 	try {
 		program.parse_args(argc, argv);
 	}
-	catch (const std::runtime_error& err) {
+	catch (const std::runtime_error & err) {
 		fmt::print(stderr, "{}\n\n", err.what());
-		program.print_help();
+		program.print_help(); 
 		exit(2);
 	}
 
@@ -91,19 +98,51 @@ int main(int argc, char** argv) {
 	}
 	else
 		output = &std::cout;
-	if (program["-t"] == true && program["-l"] == true) {
-		fmt::print(stderr, "You can only perform tokenization or syntactic analysis at one time.");
+	if (program["-s"] == true && program["-c"] == true) {
+		fmt::print(stderr, "You can only perform -s or -c at one time.");
 		exit(2);
 	}
-	if (program["-t"] == true) {
-		Tokenize(*input, *output);
-	}
-	else if (program["-l"] == true) {
+	if (program["-s"] == true) {
+		if (output_file != "-") {
+			outf.open(output_file, std::ios::out | std::ios::trunc);
+			if (!outf) {
+				fmt::print(stderr, "Fail to open {} for writing.\n", output_file);
+				exit(2);
+			}
+			output = &outf;
+		}
+		else {
+			outf.open("out", std::ios::out | std::ios::trunc);
+			if (!outf) {
+				fmt::print(stderr, "Fail to open {} for writing.\n", output_file);
+				exit(2);
+			}
+			output = &outf;
+		}
 		Analyse(*input, *output);
+	}
+	else if (program["-c"] == true) {
+		if (output_file != "-") {
+			outf.open(output_file, std::ios::out | std::ios::trunc | std::ios::binary);
+			if (!outf) {
+				fmt::print(stderr, "Fail to open {} for writing.\n", output_file);
+				exit(2);
+			}
+			output = &outf;
+		}
+		else {
+			outf.open("out", std::ios::out | std::ios::trunc | std::ios::binary);
+			if (!outf) {
+				fmt::print(stderr, "Fail to open {} for writing.\n", output_file);
+				exit(2);
+			}
+			output = &outf;
+		}
+		to_binary(*input, *output);
 	}
 	else {
 		fmt::print(stderr, "You must choose tokenization or syntactic analysis.");
 		exit(2);
 	}
-	return 0;
+	exit(0);
 }
